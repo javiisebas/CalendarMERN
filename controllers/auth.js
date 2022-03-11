@@ -13,7 +13,8 @@ ctrl.crearUsuario = async (req, res = response) => {
 
     const {
         email,
-        password
+        password,
+        repassword
     } = req.body
 
     try {
@@ -26,6 +27,13 @@ ctrl.crearUsuario = async (req, res = response) => {
             return res.status(400).json({
                 ok: false,
                 msg: 'El email introducido ya existe'
+            })
+        }
+
+        if (password !== repassword) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Las contraseñas no coinciden'
             })
         }
 
@@ -70,6 +78,7 @@ ctrl.loginUsuario = async (req, res = response) => {
         })
 
         if (!usuario) {
+            console.log('ERROR 1');
             return res.status(400).json({
                 ok: false,
                 msg: 'El email introducido no existe'
@@ -80,6 +89,7 @@ ctrl.loginUsuario = async (req, res = response) => {
         const valisPassword = bcrypt.compareSync(password, usuario.password)
 
         if (!valisPassword) {
+            console.log('ERROR 2');
             return res.status(400).json({
                 ok: false,
                 msg: 'El email o contraseña no son correctos'
@@ -89,7 +99,7 @@ ctrl.loginUsuario = async (req, res = response) => {
         // Generar nuestro JWT -> Json Web Token  
         const token = await generarJWT(usuario.id, usuario.name)
 
-        return res.status(400).json({
+        res.status(200).json({
             ok: true,
             uid: usuario.id,
             name: usuario.name,
@@ -104,10 +114,6 @@ ctrl.loginUsuario = async (req, res = response) => {
         })
     }
 
-    res.json({
-        ok: true,
-        msg: 'Login'
-    })
 }
 
 ctrl.revalidarToken = async (req, res = response) => {
@@ -123,7 +129,9 @@ ctrl.revalidarToken = async (req, res = response) => {
 
     res.json({
         ok: true,
-        token
+        uid,
+        name,
+        newToken
     })
 }
 

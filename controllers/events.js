@@ -55,6 +55,7 @@ ctrl.updateEvent = async (req, res = response) => {
 
     const eventId = req.params.id
     const uid = req.uid
+    const name = req.name
 
     try {
         const evento = await Evento.findById(eventId)
@@ -79,7 +80,8 @@ ctrl.updateEvent = async (req, res = response) => {
 
         const updatedEvent = await Evento.findByIdAndUpdate(eventId, newEvent, {
             new: true
-        })
+        }).populate('user', 'name')
+
 
         res.json({
             ok: true,

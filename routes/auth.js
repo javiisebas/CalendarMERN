@@ -23,9 +23,13 @@ router.get('/renew', validatorJWT, auth.revalidarToken)
 router.post('/new', [
     check('name', 'El nombre es obligatorio').not().isEmpty(),
     check('email', 'El email es obligatorio').not().isEmpty(),
-    check('password', 'La password es obligatoria').not().isEmpty(),
     check('email', 'El email no es válido').isEmail(),
+    check('password', 'La password es obligatoria').not().isEmpty(),
     check('password', 'La password debe tener al menos 6 caracteres').isLength({
+        min: 6
+    }),
+    check('repassword', 'La re-password es obligatoria').not().isEmpty(),
+    check('repassword', 'La re-password debe tener al menos 6 caracteres').isLength({
         min: 6
     }),
     validateBody
